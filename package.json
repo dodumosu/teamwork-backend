@@ -8,6 +8,7 @@
   "license": "Unlicense",
   "private": false,
   "dependencies": {
+    "dotenv": "^8.2.0",
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.7.0",
@@ -20,6 +21,7 @@
   },
   "scripts": {
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
-    "lint": "eslint \"**/*.{js,jsx}\" --quiet"
+    "lint": "eslint \"**/*.{js,jsx}\" --quiet",
+    "start": "node src/server.js"
   }
 }
