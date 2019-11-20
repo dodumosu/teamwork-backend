@@ -1,0 +1,25 @@
+{
+  "name": "teamwork-backend",
+  "version": "0.0.1",
+  "description": "Andela/Facebook Developer Circles capstone project - backend",
+  "main": "index.js",
+  "repository": "git@github.com:dodumosu/teamwork-backend.git",
+  "author": "Odumosu Dipo <ironkyo@gmail.com>",
+  "license": "Unlicense",
+  "private": false,
+  "dependencies": {
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jasmine": "^4.1.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "jasmine": "^3.5.0",
+    "prettier": "^1.19.1",
+    "supertest": "^4.0.2"
+  },
+  "scripts": {
+    "format": "prettier --write \"src/**/*.{js,jsx}\"",
+    "lint": "eslint \"**/*.{js,jsx}\" --quiet"
+  }
+}

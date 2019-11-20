@@ -1,0 +1,24 @@
+{
+    "env": {
+        "commonjs": true,
+        "es6": true,
+        "node": true,
+        "jasmine": true
+    },
+    "extends": [
+        "airbnb-base", "prettier"
+    ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 2016
+    },
+    "rules": {
+        "prettier/prettier": ["error"]
+    },
+    "plugins": [
+        "jasmine", "prettier"
+    ]
+}
