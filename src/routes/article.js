@@ -8,5 +8,6 @@ router.patch('/articles/:articleId', articleController.updateArticle);
 router.delete('/articles/:articleId', articleController.deleteArticle);
 router.post('/articles/:articleId/comment', articleController.addArticleComment);
 router.get('/articles/:articleId', articleController.viewArticle);
+router.get('/articles', articleController.viewArticles);
 
 module.exports = router;
