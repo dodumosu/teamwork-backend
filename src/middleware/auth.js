@@ -10,7 +10,10 @@ const verifyToken = (request, response, next) => {
     if (request.body.userId && request.body.userId !== userId) throw new Error('Invalid user ID');
     next();
   } catch (err) {
-    response.status(401).json({ error: new Error('Invalid request') });
+    response.status(401).json({
+      error: new Error('Invalid request'),
+      status: 'error'
+    });
     response.end();
   }
 };
