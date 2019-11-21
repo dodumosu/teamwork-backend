@@ -1,6 +1,7 @@
 const { Router } = require('express');
-const router = Router();
 const articleController = require('../controllers/article');
+
+const router = Router();
 
 router.post('/articles', articleController.createArticle);
 router.patch('/articles/:articleId', articleController.updateArticle);

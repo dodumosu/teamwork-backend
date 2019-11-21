@@ -1,6 +1,7 @@
 const { Router } = require('express');
-const router = Router();
 const gifController = require('../controllers/gif');
+
+const router = Router();
 
 router.post('/gifs', gifController.createGIF);
 router.delete('/gifs/:gifId', gifController.deleteGIF);
