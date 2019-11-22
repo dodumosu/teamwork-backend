@@ -1,9 +1,6 @@
-const cookieParser = require('cookie-parser');
-const jwt = require('jsonwebtoken');
-
-require('../config');
 const pool = require('../database/connection');
 const UserHelper = require('../database/user');
+const generateToken = require('../utils');
 
 const createUser = (request, response) => {
   const userHelper = new UserHelper(pool);
@@ -13,12 +10,12 @@ const login = async (request, response) => {
   const userHelper = new UserHelper(pool);
   const user = await userHelper.authenticate(request.body.email, request.body.password);
   if (user !== null) {
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' });
-    response.cookies('token', token, { httpOnly: true, signed: true });
+    const token = generateToken(user.id);
+    response.cookie('token', token, { httpOnly: true, signed: true, maxAge: 60 * 60 * 1000 });
     response.status(200).json({
       status: 'success',
       data: {
-        token: JSON.stringify(token),
+        token: token,
         userId: user.id
       }
     });
