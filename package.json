@@ -24,7 +24,8 @@
   "scripts": {
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
     "lint": "eslint \"**/*.{js,jsx}\" --quiet",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "test": "jasmine"
   },
   "devDependencies": {
     "eslint": "^6.6.0",
