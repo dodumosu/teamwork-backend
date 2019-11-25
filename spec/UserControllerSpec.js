@@ -70,4 +70,37 @@ describe('UserController', () => {
         else done();
       });
   });
+
+  it('should be able to create a user', async done => {
+    const adminUser = await userHelper.createAdmin();
+    const token = generateToken(adminUser.id);
+    const bearerHeader = `Bearer: ${token}`;
+    const seedData = {
+      email: faker.internet.email(),
+      first_name: faker.name.firstName(),
+      last_name: faker.name.lastName(),
+      gender: faker.random.number() % 2 === 0 ? 'Female' : 'Male',
+      department: faker.commerce.department(),
+      address: faker.address.streetAddress(),
+      phone: faker.phone.phoneNumber(),
+      password: faker.random.word()
+    };
+
+    request(app)
+      .post('/api/v1/auth/create-user')
+      .set('Accept', 'application/json')
+      .set('Authorization', bearerHeader)
+      .send(seedData)
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .expect(response => {
+        expect(response.body.status).toBe('success');
+        expect(response.body.data.email).toBe(seedData.email);
+        expect(response.body.data.message).toBe('User account successfully created');
+      })
+      .end(err => {
+        if (err) done.fail(err);
+        else done();
+      });
+  });
 });

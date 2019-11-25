@@ -28,6 +28,19 @@ class UserHelper {
   }
 
   async createUser(userSpec) {
+    if (
+      !(
+        userSpec.email &&
+        userSpec.first_name &&
+        userSpec.last_name &&
+        userSpec.gender &&
+        userSpec.department &&
+        userSpec.address &&
+        userSpec.phone &&
+        userSpec.password
+      )
+    )
+      return null;
     const hash = await bcrypt.hash(userSpec.password, 10);
     const params = [
       userSpec.email,
@@ -88,6 +101,23 @@ class UserHelper {
     // the parseInt() call is necessary. for some reason, it's
     // returned as a string
     return Number.parseInt(result.rows[0].cnt);
+  }
+
+  async createAdmin() {
+    const userSpec = {
+      email: 'admin@example.com',
+      password: 'password',
+      first_name: 'Admin',
+      last_name: 'User',
+      department: 'Tech',
+      gender: 'Neuter',
+      address: 'Internet',
+      phone: '127.0.0.1'
+    };
+
+    const result = await this.pool.query('SELECT * FROM users WHERE email = $1', [userSpec.email]);
+    if (result.rowCount === 0) return this.createUser(userSpec);
+    return result.rows[0];
   }
 }
 

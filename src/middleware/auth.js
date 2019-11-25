@@ -9,6 +9,7 @@ const verifyToken = (request, response, next) => {
     if (!token) throw new Error('Invalid token');
     const { userId } = verify(token, process.env.JWT_SECRET);
     if (request.body.userId && request.body.userId !== userId) throw new Error('Invalid user ID');
+    else request.body.userId = userId;
     next();
   } catch (err) {
     response.status(401).json({
