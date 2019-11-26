@@ -24,7 +24,7 @@ class UserHelper {
   }
 
   dropTable() {
-    return this.pool.query('DROP TABLE IF EXISTS users');
+    return this.pool.query('DROP TABLE IF EXISTS users CASCADE');
   }
 
   async createUser(userSpec) {
@@ -66,8 +66,8 @@ class UserHelper {
   async authenticate(email, password) {
     const result = await this.pool.query(
       `
-      SELECT id, email, password, is_admin FROM users WHERE email = $1
-    `,
+        SELECT id, email, password, is_admin FROM users WHERE email = $1
+      `,
       [email]
     );
 
