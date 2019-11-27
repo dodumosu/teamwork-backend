@@ -1,3 +1,5 @@
+const path = require('path');
+
 const faker = require('faker');
 
 const generateUserData = () => {
