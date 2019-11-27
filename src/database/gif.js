@@ -65,7 +65,7 @@ class GIFHelper {
       params
     );
 
-    if (removeFile) fs.unlink(filePath);
+    if (removeFile === true) fs.unlink(filePath);
 
     return result.rows[0];
   }
@@ -86,7 +86,7 @@ class GIFHelper {
   async getGIF(gifId) {
     const result = await this.pool.query(
       `
-        SELECT id, url, public_id, flagged FROM gifs WHERE id = $1;
+        SELECT id, url, public_id, author_id, flagged FROM gifs WHERE id = $1;
       `,
       [gifId]
     );
@@ -111,6 +111,11 @@ class GIFHelper {
 
     if (result) return result.rowCount === 1;
     else return false;
+  }
+
+  async flagGIF(gifId) {
+    const result = await this.pool.query("UPDATE gifs SET flagged = 't' WHERE id = $1", [gifId]);
+    return result.rowCount === 1;
   }
 }
 
