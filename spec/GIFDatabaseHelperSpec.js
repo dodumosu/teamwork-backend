@@ -4,7 +4,7 @@ const path = require('path');
 const pool = require('../src/database/connection');
 const GIFHelper = require('../src/database/gif');
 const UserHelper = require('../src/database/user');
-const { generateUserData } = require('./seeder');
+const { generateUserData, getRandomImageFixture } = require('./seeder');
 
 describe('GIFHelper', () => {
   const gifHelper = new GIFHelper(pool);
@@ -22,8 +22,7 @@ describe('GIFHelper', () => {
     const seedData = generateUserData();
 
     const userInfo = await userHelper.createUser(seedData);
-    const fileName = `0${Math.trunc(6 * Math.random())}.gif`;
-    const filePath = path.join(process.cwd(), 'spec', 'fixtures', fileName);
+    const filePath = getRandomImageFixture();
     const gifInfo = await gifHelper.createGIF(userInfo.id, filePath, false);
 
     expect(gifInfo.id).not.toBeNull();
@@ -38,13 +37,23 @@ describe('GIFHelper', () => {
     const seedData = generateUserData();
 
     const userInfo = await userHelper.createUser(seedData);
-    const fileName = `0${Math.trunc(6 * Math.random())}.gif`;
-    const filePath = path.join(process.cwd(), 'spec', 'fixtures', fileName);
+    const filePath = getRandomImageFixture();
     const gifInfo = await gifHelper.createGIF(userInfo.id, filePath, false);
 
     const gifComment = await gifHelper.createComment(userInfo.id, gifInfo.id, 'First comment!');
     expect(gifComment.id).toBeDefined();
     expect(gifComment.id).not.toBeNull();
     expect(gifComment.comment).toBe('First comment!');
+  });
+
+  it('should be able to delete a GIF', async () => {
+    const user1Data = generateUserData();
+    const user2Data = generateUserData();
+    const user1 = await userHelper.createUser(user1Data);
+    const user2 = await userHelper.createUser(user2Data);
+    const admin = await userHelper.createAdmin();
+    const filePath = getRandomImageFixture();
+
+    const gifInfo = await gifHelper.createGIF(user1.id, filePath);
   });
 });

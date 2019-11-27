@@ -13,6 +13,12 @@ const generateUserData = () => {
   };
 };
 
+const getRandomImageFixture = () => {
+  const fileName = `0${Math.trunc(6 * Math.random())}.gif`;
+  return path.join(process.cwd(), 'spec', 'fixtures', fileName);
+};
+
 module.exports = {
-  generateUserData
+  generateUserData,
+  getRandomImageFixture
 };
