@@ -1,11 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 
-const faker = require('faker');
-
 const pool = require('../src/database/connection');
 const GIFHelper = require('../src/database/gif');
 const UserHelper = require('../src/database/user');
+const { generateUserData } = require('./seeder');
 
 describe('GIFHelper', () => {
   const gifHelper = new GIFHelper(pool);
@@ -20,16 +19,7 @@ describe('GIFHelper', () => {
   });
 
   it('should be able to create a GIF', async () => {
-    const seedData = {
-      email: faker.internet.email(),
-      first_name: faker.name.firstName(),
-      last_name: faker.name.lastName(),
-      gender: faker.random.number() % 2 === 0 ? 'Female' : 'Male',
-      department: faker.commerce.department(),
-      address: faker.address.streetAddress(),
-      phone: faker.phone.phoneNumber(),
-      password: faker.random.word()
-    };
+    const seedData = generateUserData();
 
     const userInfo = await userHelper.createUser(seedData);
     const fileName = `0${Math.trunc(6 * Math.random())}.gif`;
@@ -45,16 +35,7 @@ describe('GIFHelper', () => {
   });
 
   it('should be able to create a GIF comment', async () => {
-    const seedData = {
-      email: faker.internet.email(),
-      first_name: faker.name.firstName(),
-      last_name: faker.name.lastName(),
-      gender: faker.random.number() % 2 === 0 ? 'Female' : 'Male',
-      department: faker.commerce.department(),
-      address: faker.address.streetAddress(),
-      phone: faker.phone.phoneNumber(),
-      password: faker.random.word()
-    };
+    const seedData = generateUserData();
 
     const userInfo = await userHelper.createUser(seedData);
     const fileName = `0${Math.trunc(6 * Math.random())}.gif`;

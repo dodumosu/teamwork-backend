@@ -1,7 +1,6 @@
-const faker = require('faker');
-
 const pool = require('../src/database/connection');
 const UserHelper = require('../src/database/user');
+const { generateUserData } = require('./seeder');
 
 describe('UserHelper', () => {
   const userHelper = new UserHelper(pool);
@@ -13,16 +12,7 @@ describe('UserHelper', () => {
 
   it('should be able to create an employee', async () => {
     const originalUserCount = await userHelper.getUserCount();
-    const seedData = {
-      email: faker.internet.email(),
-      first_name: faker.name.firstName(),
-      last_name: faker.name.lastName(),
-      gender: faker.random.number() % 2 === 0 ? 'Female' : 'Male',
-      department: faker.commerce.department(),
-      address: faker.address.streetAddress(),
-      phone: faker.phone.phoneNumber(),
-      password: faker.random.word()
-    };
+    const seedData = generateUserData();
 
     const userInfo = await userHelper.createUser(seedData);
     const newUserCount = await userHelper.getUserCount();
@@ -40,16 +30,7 @@ describe('UserHelper', () => {
   });
 
   it('should be able to authenticate a user', async () => {
-    const seedData = {
-      email: faker.internet.email(),
-      first_name: faker.name.firstName(),
-      last_name: faker.name.lastName(),
-      gender: faker.random.number() % 2 === 0 ? 'Female' : 'Male',
-      department: faker.commerce.department(),
-      address: faker.address.streetAddress(),
-      phone: faker.phone.phoneNumber(),
-      password: faker.random.word()
-    };
+    const seedData = generateUserData();
 
     const userInfo = await userHelper.createUser(seedData);
     const authUser = await userHelper.authenticate(seedData.email, seedData.password);
