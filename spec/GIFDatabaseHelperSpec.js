@@ -1,6 +1,3 @@
-const fs = require('fs');
-const path = require('path');
-
 const pool = require('../src/database/connection');
 const GIFHelper = require('../src/database/gif');
 const UserHelper = require('../src/database/user');
@@ -54,6 +51,18 @@ describe('GIFHelper', () => {
     const admin = await userHelper.createAdmin();
     const filePath = getRandomImageFixture();
 
-    const gifInfo = await gifHelper.createGIF(user1.id, filePath);
+    let gifInfo = await gifHelper.createGIF(user1.id, filePath, false);
+
+    let result = await gifHelper.deleteGIF(user2, gifInfo.id);
+    expect(result).toBe(false);
+    result = await gifHelper.deleteGIF(user1, gifInfo.id);
+    expect(result).toBe(true);
+
+    gifInfo = await gifHelper.createGIF(user2.id, filePath, false);
+    result = await gifHelper.deleteGIF(admin, gifInfo.id);
+    expect(result).toBe(false);
+    await gifHelper.flagGIF(gifInfo.id);
+    result = await gifHelper.deleteGIF(admin, gifInfo.id);
+    expect(result).toBe(true);
   });
 });
