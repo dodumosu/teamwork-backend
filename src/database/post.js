@@ -114,6 +114,20 @@ class PostHelper {
     return null;
   }
 
+  async getComment(commentId) {
+    const result = await this.pool.query(
+      `
+        SELECT comments.*, users.first_name, users.last_name FROM comments JOIN users ON comments.author_id = users.id WHERE comments.id = $1;
+      `,
+      [commentId]
+    );
+    if (result.rowCount === 1) {
+      return result.rows[0];
+    }
+
+    return null;
+  }
+
   async deletePost(user, postId) {
     // if the user is an admin, they can delete flagged posts
     // otherwise, a user can only delete their own posts
@@ -132,16 +146,28 @@ class PostHelper {
     else return false;
   }
 
+  async deleteComment(user, commentId) {
+    // if the user is an admin, they can delete flagged comments
+    const comment = await this.getComment(commentId);
+    const canDelete = comment !== null && user.email === 'admin@example.com' && comment.flagged;
+    let result = null;
+    if (canDelete)
+      result = await this.pool.query('DELETE FROM comments WHERE id = $1', [commentId]);
+
+    if (result) return result.rowCount === 1;
+    else return false;
+  }
+
   async updateArticle(userId, articleId, title, body) {
     const params = [title, body, userId, articleId];
     const result = await this.pool.query(
       `
-      UPDATE posts SET title = $1 AND body = $2 AND updated = NOW() WHERE author_id = $3 AND id = $4 RETURNING *;
+      UPDATE posts SET title = $1, body = $2, updated_at = NOW() WHERE author_id = $3 AND id = $4 RETURNING *;
       `,
       params
     );
 
-    return result.rows[0];
+    return result.rows[0] || null;
   }
 
   async flagPost(postId) {
