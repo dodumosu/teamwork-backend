@@ -4,6 +4,7 @@ const request = require('supertest');
 const pool = require('../src/database/connection');
 const UserHelper = require('../src/database/user');
 const generateToken = require('../src/utils');
+const { generateUserData } = require('./seeder');
 
 let app;
 
@@ -18,16 +19,7 @@ describe('UserController', () => {
   });
 
   it('should be able to login', async done => {
-    const seedData = {
-      email: faker.internet.email(),
-      first_name: faker.name.firstName(),
-      last_name: faker.name.lastName(),
-      gender: faker.random.number() % 2 === 0 ? 'Female' : 'Male',
-      department: faker.commerce.department(),
-      address: faker.address.streetAddress(),
-      phone: faker.phone.phoneNumber(),
-      password: faker.random.word()
-    };
+    const seedData = generateUserData();
 
     const userInfo = await userHelper.createUser(seedData);
 
@@ -75,16 +67,7 @@ describe('UserController', () => {
     const adminUser = await userHelper.createAdmin();
     const token = generateToken(adminUser.id);
     const bearerHeader = `Bearer: ${token}`;
-    const seedData = {
-      email: faker.internet.email(),
-      first_name: faker.name.firstName(),
-      last_name: faker.name.lastName(),
-      gender: faker.random.number() % 2 === 0 ? 'Female' : 'Male',
-      department: faker.commerce.department(),
-      address: faker.address.streetAddress(),
-      phone: faker.phone.phoneNumber(),
-      password: faker.random.word()
-    };
+    const seedData = generateUserData();
 
     request(app)
       .post('/api/v1/auth/create-user')
