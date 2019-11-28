@@ -20,6 +20,7 @@ class GIFHelper {
       CREATE TABLE IF NOT EXISTS gifs (
         id SERIAL NOT NULL PRIMARY KEY,
         author_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        title VARCHAR(128) NOT NULL,
         url VARCHAR(512) NOT NULL,
         public_id VARCHAR(64) NOT NULL,
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -52,15 +53,15 @@ class GIFHelper {
     `);
   }
 
-  async createGIF(userId, filePath, removeFile = true) {
+  async createGIF(userId, filePath, title, removeFile = true) {
     const resource = await cloudinary.uploader.upload(filePath, {
       format: 'gif',
       resource_type: 'auto'
     });
-    const params = [resource.url, userId, resource.public_id];
+    const params = [resource.url, userId, title, resource.public_id];
     const result = await this.pool.query(
       `
-      INSERT INTO gifs (url, author_id, public_id) VALUES ($1, $2, $3) RETURNING id, url, public_id;
+      INSERT INTO gifs (url, author_id, title, public_id) VALUES ($1, $2, $3, $4) RETURNING id, url, public_id, title;
       `,
       params
     );
@@ -75,7 +76,7 @@ class GIFHelper {
     const result = await this.pool.query(
       `INSERT INTO gif_comments (
           gif_id, author_id, comment
-        ) VALUES ($1, $2, $3) RETURNING id, comment;
+        ) VALUES ($1, $2, $3) RETURNING id, gif_id, author_id, comment;
       `,
       params
     );
