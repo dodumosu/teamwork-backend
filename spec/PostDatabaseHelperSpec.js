@@ -180,7 +180,9 @@ describe('PostHelper', () => {
     const articleInfo = await postHelper.createArticle(user1.id, articleTitle, body);
     const commentInfo = await postHelper.createComment(user2.id, articleInfo.id, comment);
 
-    let result = await postHelper.deleteComment(admin, commentInfo.id);
+    let result = await postHelper.deleteComment(user1, commentInfo.id);
+    expect(result).toBe(false);
+    result = await postHelper.deleteComment(admin, commentInfo.id);
     expect(result).toBe(false);
     await postHelper.flagComment(commentInfo.id);
     result = await postHelper.deleteComment(admin, commentInfo.id);
