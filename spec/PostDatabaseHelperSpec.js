@@ -110,8 +110,36 @@ describe('PostHelper', () => {
     expect(gifCommentInfo.comment).toBe(gifComment);
   });
 
-  it('should be able to flag a post', async () => {});
-  it('should be able to flag a comment', async () => {});
+  it('should be able to flag a post', async () => {
+    const userData = generateUserData();
+    const articleTitle = faker.lorem.sentence();
+    const body = faker.lorem.sentences(10);
+
+    const user = await userHelper.createUser(userData);
+
+    const articleInfo = await postHelper.createArticle(user.id, articleTitle, body);
+    const result = await postHelper.flagPost(articleInfo.id);
+
+    expect(result).toBe(true);
+  });
+
+  it('should be able to flag a comment', async () => {
+    const user1Data = generateUserData();
+    const user2Data = generateUserData();
+    const articleTitle = faker.lorem.sentence();
+    const body = faker.lorem.sentences(10);
+    const comment = faker.lorem.sentence();
+
+    const user1 = await userHelper.createUser(user1Data);
+    const user2 = await userHelper.createUser(user2Data);
+
+    const articleInfo = await postHelper.createArticle(user1.id, articleTitle, body);
+    const commentInfo = await postHelper.createComment(user2.id, articleInfo.id, comment);
+    const result = await postHelper.flagComment(commentInfo.id);
+
+    expect(result).toBe(true);
+  });
+
   it('should be able to delete a post', async () => {
     const user1Data = generateUserData();
     const user2Data = generateUserData();
@@ -138,5 +166,24 @@ describe('PostHelper', () => {
     expect(result).toBe(true);
   });
 
-  it('should be able to delete a comment', async () => {});
+  it('should be able to delete a comment', async () => {
+    const user1Data = generateUserData();
+    const user2Data = generateUserData();
+    const articleTitle = faker.lorem.sentence();
+    const body = faker.lorem.sentences(10);
+    const comment = faker.lorem.sentence();
+
+    const user1 = await userHelper.createUser(user1Data);
+    const user2 = await userHelper.createUser(user2Data);
+    const admin = await userHelper.createAdmin();
+
+    const articleInfo = await postHelper.createArticle(user1.id, articleTitle, body);
+    const commentInfo = await postHelper.createComment(user2.id, articleInfo.id, comment);
+
+    let result = await postHelper.deleteComment(admin, commentInfo.id);
+    expect(result).toBe(false);
+    await postHelper.flagComment(commentInfo.id);
+    result = await postHelper.deleteComment(admin, commentInfo.id);
+    expect(result).toBe(true);
+  });
 });
