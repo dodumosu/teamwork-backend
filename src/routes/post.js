@@ -5,16 +5,16 @@ const authMiddleware = require('../middleware/auth');
 const router = Router();
 
 router.post('/articles', authMiddleware, postController.createArticle);
-router.patch('/articles/:articleId', authMiddleware, postController.updateArticle);
-router.delete('/articles/:articleId', authMiddleware, postController.deleteArticle);
-router.post('/articles/:articleId/comment', authMiddleware, postController.addArticleComment);
-router.get('/articles/:articleId', authMiddleware, postController.viewArticle);
-router.get('/articles', authMiddleware, postController.viewArticles);
+router.patch('/articles/:post_id', authMiddleware, postController.updateArticle);
+router.delete('/articles/:post_id', authMiddleware, postController.deletePost);
+router.post('/articles/:post_id/comment', authMiddleware, postController.addComment);
+router.post('/articles/:post_id/comment/:comment_id', authMiddleware, postController.flagComment);
+router.get('/articles/:post_id', authMiddleware, postController.viewPost);
 router.post('/gifs', authMiddleware, postController.createGIF);
-router.delete('/gifs/:gifId', authMiddleware, postController.deleteGIF);
-router.post('/gifs/:gifId/comment', authMiddleware, postController.addGIFComment);
-router.get('/gifs/:gifId', authMiddleware, postController.viewGIF);
-router.get('/gifs', authMiddleware, postController.viewGIFs);
+router.delete('/gifs/:post_id', authMiddleware, postController.deletePost);
+router.post('/gifs/:post_id/comment', authMiddleware, postController.addComment);
+router.post('/gifs/:post_id/comment/:comment_id', authMiddleware, postController.flagComment);
+router.get('/gifs/:post_id', authMiddleware, postController.viewPost);
 router.get('/feed', authMiddleware, postController.feed);
 
 module.exports = router;

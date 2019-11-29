@@ -133,8 +133,8 @@ class PostHelper {
     // otherwise, a user can only delete their own posts
     const post = await this.getPost(postId);
     const canDelete =
-      (post !== null && user.email === 'admin@example.com' && post.flagged) ||
-      post.author_id === user.id;
+      post !== null &&
+      ((user.email === 'admin@example.com' && post.flagged) || post.author_id === user.id);
     let result = null;
     if (canDelete) {
       result = await this.pool.query('DELETE FROM posts WHERE id = $1', [postId]);
@@ -146,13 +146,16 @@ class PostHelper {
     else return false;
   }
 
-  async deleteComment(user, commentId) {
+  async deleteComment(user, postId, commentId) {
     // if the user is an admin, they can delete flagged comments
     const comment = await this.getComment(commentId);
     const canDelete = comment !== null && user.email === 'admin@example.com' && comment.flagged;
     let result = null;
     if (canDelete)
-      result = await this.pool.query('DELETE FROM comments WHERE id = $1', [commentId]);
+      result = await this.pool.query('DELETE FROM comments WHERE id = $1 AND post_id = $2', [
+        commentId,
+        postId
+      ]);
 
     if (result) return result.rowCount === 1;
     else return false;
@@ -175,10 +178,11 @@ class PostHelper {
     return result.rowCount === 1;
   }
 
-  async flagComment(commentId) {
-    const result = await this.pool.query("UPDATE comments SET flagged = 't' WHERE id = $1", [
-      commentId
-    ]);
+  async flagComment(postId, commentId) {
+    const result = await this.pool.query(
+      "UPDATE comments SET flagged = 't' WHERE id = $1 AND post_id = $2",
+      [commentId, postId]
+    );
     return result.rowCount === 1;
   }
 
