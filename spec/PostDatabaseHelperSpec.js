@@ -22,7 +22,8 @@ describe('PostHelper', () => {
 
     const userInfo = await userHelper.createUser(seedData);
     const filePath = getRandomImageFixture();
-    const gifInfo = await postHelper.createGIF(userInfo.id, filePath, false);
+    const title = faker.lorem.sentence();
+    const gifInfo = await postHelper.createGIF(userInfo.id, filePath, title, false);
 
     expect(gifInfo.id).not.toBeNull();
     expect(gifInfo.id).toBeDefined();
@@ -117,20 +118,22 @@ describe('PostHelper', () => {
     const user1 = await userHelper.createUser(user1Data);
     const user2 = await userHelper.createUser(user2Data);
     const admin = await userHelper.createAdmin();
+    const post1Title = faker.lorem.sentence();
+    const post2Title = faker.lorem.sentence();
+    const post1Body = faker.lorem.sentences(5);
     const filePath = getRandomImageFixture();
-    const title = faker.lorem.sentence();
 
-    let gifInfo = await postHelper.createGIF(user1.id, filePath, title, false);
+    const articleInfo = await postHelper.createArticle(user1.id, post1Title, post1Body);
 
-    let result = await postHelper.deletePost(user2, gifInfo.id);
+    let result = await postHelper.deletePost(user2, articleInfo.id);
     expect(result).toBe(false);
-    result = await postHelper.deletePost(user1, gifInfo.id);
+    result = await postHelper.deletePost(user1, articleInfo.id);
     expect(result).toBe(true);
 
-    gifInfo = await postHelper.createGIF(user2.id, filePath, title, false);
+    const gifInfo = await postHelper.createGIF(user2.id, filePath, post2Title, false);
     result = await postHelper.deletePost(admin, gifInfo.id);
     expect(result).toBe(false);
-    await postHelper.flagGIF(gifInfo.id);
+    await postHelper.flagPost(gifInfo.id);
     result = await postHelper.deletePost(admin, gifInfo.id);
     expect(result).toBe(true);
   });
